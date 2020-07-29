@@ -9,14 +9,27 @@ import java.net.URL;
 import java.nio.file.Paths;
 
 /**
+ * Class has realizes download file from network
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 29.07.2020
  */
 public class FileDownloader implements Download {
 
+    /**
+     * URL
+     */
     private final URL url;
+
+    /**
+     * File out
+     */
     private final File out;
+
+    /**
+     * Limit byte
+     */
     private final int limit;
 
     public FileDownloader(URL url, File out, int limit) {
@@ -25,37 +38,23 @@ public class FileDownloader implements Download {
         this.limit = limit;
     }
 
+    /**
+     * Method of downloading file from network
+     */
     @Override
     public void downloading() {
         try (BufferedInputStream in = new BufferedInputStream(url.openStream());
              FileOutputStream fileOut = new FileOutputStream(out)) {
-            byte[] byteBuffer = new byte[1024];
+            byte[] byteBuffer = new byte[limit];
             int read;
             while ((read = in.read(byteBuffer)) != -1) {
-                pause(read);
                 fileOut.write(byteBuffer);
+                Thread.sleep(1000);
             }
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
-    }
-
-    private void pause(int read) {
-        if (read > limit) {
-            try {
-                Thread.sleep(1000);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
-        }
-    }
-
-    public static void main(String[] args) throws MalformedURLException {
-        System.setProperty("https.proxyHost", "192.168.111.102");
-        System.setProperty("https.proxyPort", "3128");
-        Download download = new FileDownloader(new URL("https://raw.githubusercontent.com/peterarsentev/course_test/master/pom.xml"),
-                new File("C:\\Users\\vda-it\\Downloads\\Новый текстовый документ.txt"), 200);
-        download.downloading();
-        System.setProperty("https.proxyHost", null);
     }
 }
