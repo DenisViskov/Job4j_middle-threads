@@ -20,7 +20,7 @@ public class Wget {
                             index++;
                         }
                     } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        Thread.currentThread().interrupt();
                     }
                 }
         );
