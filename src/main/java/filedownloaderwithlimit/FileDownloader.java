@@ -4,9 +4,7 @@ import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
-import java.nio.file.Paths;
 
 /**
  * Class has realizes download file from network
@@ -48,6 +46,7 @@ public class FileDownloader implements Download {
             byte[] byteBuffer = new byte[limit];
             int read;
             while ((read = in.read(byteBuffer)) != -1) {
+                pause(read);
                 fileOut.write(byteBuffer);
                 Thread.sleep(1000);
             }
@@ -55,6 +54,21 @@ public class FileDownloader implements Download {
             e.printStackTrace();
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
+        }
+    }
+
+    /**
+     * Method of sleep thread if read byte more than limit on different time between them
+     *
+     * @param read
+     */
+    private void pause(int read) {
+        if (read > limit) {
+            try {
+                Thread.sleep(read - limit);
+            } catch (InterruptedException e) {
+                Thread.currentThread().interrupt();
+            }
         }
     }
 }
