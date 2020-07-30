@@ -13,7 +13,7 @@ import java.net.URL;
  * @version 1.0
  * @since 29.07.2020
  */
-public class FileDownloader implements Download {
+public class FileDownloader implements Download, Runnable {
 
     /**
      * URL
@@ -45,30 +45,42 @@ public class FileDownloader implements Download {
              FileOutputStream fileOut = new FileOutputStream(out)) {
             byte[] byteBuffer = new byte[limit];
             int read;
+            long time = System.currentTimeMillis();
             while ((read = in.read(byteBuffer)) != -1) {
-                pause(read);
+                time = System.currentTimeMillis() - time;
+                pause(time);
                 fileOut.write(byteBuffer);
-                Thread.sleep(1000);
             }
         } catch (IOException e) {
             e.printStackTrace();
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
         }
     }
 
     /**
-     * Method of sleep thread if read byte more than limit on different time between them
+     * Method of sleep thread
+     * if read time more than 1 second  current thread sleeping in 1 second
      *
-     * @param read
+     * @param time
      */
-    private void pause(int read) {
-        if (read > limit) {
+    private void pause(long time) {
+        if (time < 1000) {
             try {
-                Thread.sleep(read - limit);
+                Thread.sleep(1000 - time);
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
             }
         }
+    }
+
+    @Override
+    public void run() {
+        downloading();
+    }
+
+    public static void main(String[] args) throws IOException {
+        File file = new File("Hi");
+        file.createNewFile();
+        new FileDownloader(new URL("https://raw.githubusercontent.com/peterarsentev/course_test/master/pom.xml"),
+                file, 200).downloading();
     }
 }
