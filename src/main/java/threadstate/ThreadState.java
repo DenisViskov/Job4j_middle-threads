@@ -22,6 +22,8 @@ public class ThreadState {
                 && second.getState() != Thread.State.TERMINATED) {
 
         }
+        first.interrupt();
+        second.interrupt();
         System.out.println("work is done");
     }
 }
