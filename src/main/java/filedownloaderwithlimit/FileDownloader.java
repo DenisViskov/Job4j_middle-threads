@@ -44,12 +44,12 @@ public class FileDownloader implements Download, Runnable {
         try (BufferedInputStream in = new BufferedInputStream(url.openStream());
              FileOutputStream fileOut = new FileOutputStream(out)) {
             byte[] byteBuffer = new byte[limit];
-            int read;
-            long time = System.currentTimeMillis();
-            while ((read = in.read(byteBuffer)) != -1) {
+            while (in.available() != -1) {
+                long time = System.currentTimeMillis();
+                in.read(byteBuffer);
+                fileOut.write(byteBuffer);
                 time = System.currentTimeMillis() - time;
                 pause(time);
-                fileOut.write(byteBuffer);
             }
         } catch (IOException e) {
             e.printStackTrace();
