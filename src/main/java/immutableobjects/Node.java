@@ -1,6 +1,6 @@
 package immutableobjects;
 
-import jdk.nashorn.internal.ir.annotations.Immutable;
+
 
 /**
  * Class has example immutable class
@@ -9,7 +9,6 @@ import jdk.nashorn.internal.ir.annotations.Immutable;
  * @version 1.0
  * @since 30.07.2020
  */
-@Immutable
 public class Node<T> {
     /**
      * Next Node
