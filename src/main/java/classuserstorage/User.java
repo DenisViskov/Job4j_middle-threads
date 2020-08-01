@@ -1,5 +1,7 @@
 package classuserstorage;
 
+import java.util.Objects;
+
 /**
  * Class of data user
  *
@@ -33,5 +35,23 @@ public class User {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        User user = (User) o;
+        return getId() == user.getId()
+                && getAmount() == user.getAmount();
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getId(), getAmount());
     }
 }
