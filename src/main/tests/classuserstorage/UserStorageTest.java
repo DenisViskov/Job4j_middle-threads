@@ -43,13 +43,4 @@ public class UserStorageTest {
         assertThat(first.getAmount(), is(100));
         assertThat(second.getAmount(), is(600));
     }
-
-    @Test
-    public void findByIDTest() {
-        UserStorage storage = new UserStorage();
-        User user = new User(1, 200);
-        storage.add(user);
-        User out = storage.findByID(1);
-        assertThat(out, is(user));
-    }
 }
