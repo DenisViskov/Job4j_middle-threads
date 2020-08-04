@@ -25,9 +25,9 @@ public class SimpleBlockingQueueTest {
             queue.offer(6);
         });
         Thread consumer = new Thread(() -> {
-            int value = queue.poll();
-            value = queue.poll();
-            value = queue.poll();
+            queue.poll();
+            queue.poll();
+            queue.poll();
         });
         consumer.start();
         Thread.sleep(5000);
