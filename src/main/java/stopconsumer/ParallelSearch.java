@@ -1,5 +1,6 @@
 package stopconsumer;
 
+import net.jcip.annotations.ThreadSafe;
 import shabloneproducerconsumer.SimpleBlockingQueue;
 
 /**
@@ -9,14 +10,20 @@ import shabloneproducerconsumer.SimpleBlockingQueue;
  * @version 1.0
  * @since 05.08.2020
  */
+@ThreadSafe
 public class ParallelSearch {
 
     public static void main(String[] args) {
         SimpleBlockingQueue<Integer> queue = new SimpleBlockingQueue<>(5);
         final Thread consumer = new Thread(
                 () -> {
-                    while (true) {
-                        System.out.println(queue.poll());
+                    while (!Thread.currentThread().isInterrupted()) {
+                        try {
+                            System.out.println(queue.poll());
+                        } catch (InterruptedException e) {
+                            System.out.println("Consumer interrupted");
+                            Thread.currentThread().interrupt();
+                        }
                     }
                 }
         );
@@ -31,6 +38,7 @@ public class ParallelSearch {
                             e.printStackTrace();
                         }
                     }
+                    consumer.interrupt();
                 }
         ).start();
     }
