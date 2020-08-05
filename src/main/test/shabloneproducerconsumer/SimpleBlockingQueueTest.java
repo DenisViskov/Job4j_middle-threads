@@ -25,9 +25,21 @@ public class SimpleBlockingQueueTest {
             queue.offer(6);
         });
         Thread consumer = new Thread(() -> {
-            queue.poll();
-            queue.poll();
-            queue.poll();
+            try {
+                queue.poll();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                queue.poll();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                queue.poll();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         });
         consumer.start();
         Thread.sleep(5000);

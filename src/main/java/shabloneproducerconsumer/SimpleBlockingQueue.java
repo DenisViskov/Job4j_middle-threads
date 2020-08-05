@@ -55,9 +55,9 @@ public class SimpleBlockingQueue<T> {
      *
      * @return T
      */
-    public synchronized T poll() {
+    public synchronized T poll() throws InterruptedException {
         Optional<T> box = Optional.ofNullable(queue.poll());
-        while (!box.isPresent()) {
+        if (!box.isPresent()) {
             try {
                 wait();
                 box = Optional.ofNullable(queue.poll());
