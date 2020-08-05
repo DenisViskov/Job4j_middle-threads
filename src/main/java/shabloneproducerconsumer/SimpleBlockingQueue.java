@@ -68,4 +68,13 @@ public class SimpleBlockingQueue<T> {
         notifyAll();
         return box.get();
     }
+
+    /**
+     * Method of checking queue on empty
+     *
+     * @return boolean
+     */
+    public synchronized boolean isEmpty() {
+        return queue.isEmpty();
+    }
 }
