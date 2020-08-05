@@ -39,7 +39,7 @@ public class SimpleBlockingQueue<T> {
      * @param value
      */
     public synchronized void offer(T value) {
-        if (isTotal()) {
+        if (queue.size() > total) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -67,22 +67,5 @@ public class SimpleBlockingQueue<T> {
         }
         notifyAll();
         return box.get();
-    }
-
-    /**
-     * Method of checking total value in queue
-     *
-     * @return boolean
-     */
-    private synchronized boolean isTotal() {
-        int count = 0;
-        Queue<T> temp = new LinkedList<>();
-        queue.forEach(elem -> temp.offer(elem));
-        Iterator<T> it = temp.iterator();
-        while (it.hasNext()) {
-            it.next();
-            count++;
-        }
-        return count >= total ? true : false;
     }
 }
