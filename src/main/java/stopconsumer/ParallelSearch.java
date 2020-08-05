@@ -4,7 +4,7 @@ import net.jcip.annotations.ThreadSafe;
 import shabloneproducerconsumer.SimpleBlockingQueue;
 
 /**
- * Класс реализует ...
+ * Class is a parallel Search
  *
  * @author Денис Висков
  * @version 1.0
