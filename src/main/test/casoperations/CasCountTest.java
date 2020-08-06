@@ -17,9 +17,9 @@ public class CasCountTest {
             casCount.increment();
         });
         first.start();
-        //second.start();
+        second.start();
         first.join();
-        //second.join();
+        second.join();
         int out = casCount.get();
         assertThat(out, is(2));
     }
