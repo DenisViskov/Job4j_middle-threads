@@ -10,7 +10,7 @@ package nonblockingcache;
 public interface Cache<T> {
     boolean add(T model);
 
-    boolean update(T model);
+    void update(T model);
 
     boolean delete(T model);
 }

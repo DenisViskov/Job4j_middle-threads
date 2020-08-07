@@ -2,6 +2,7 @@ package nonblockingcache;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * @author Денис Висков
@@ -10,7 +11,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class NonBlockingCache implements Cache<Base> {
 
-    private Map<Integer, Base> cache;
+    private final Map<Integer, Base> cache;
+    private AtomicReference<Integer> version;
 
     public NonBlockingCache() {
         this.cache = new ConcurrentHashMap<>();
@@ -27,8 +29,17 @@ public class NonBlockingCache implements Cache<Base> {
     }
 
     @Override
-    public boolean update(Base model) {
-        return false;
+    public void update(Base model) {
+        version.set(model.getVersion());
+        cache.computeIfPresent(model.getId(), (key, value) -> {
+            int current = version.get();
+            int newVersion = current + 1;
+            if (!version.compareAndSet(current, newVersion)) {
+                throw new OptimisticException();
+            }
+            model.setVersion(version.get());
+            return model;
+        });
     }
 
     @Override
