@@ -22,8 +22,7 @@ public class CasCount<T> {
         int newValue;
         do {
             current = count.get();
-            newValue = ++current;
-            count.set(newValue);
+            newValue = current + 1;
         } while (!count.compareAndSet(current, newValue));
     }
 
