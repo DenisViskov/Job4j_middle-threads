@@ -3,13 +3,26 @@ package nonblockingcache;
 import java.util.Objects;
 
 /**
+ * Class is a Base
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 06.08.2020
  */
 public class Base {
+    /**
+     * ID
+     */
     private final int id;
+
+    /**
+     * Version
+     */
     private int version;
+
+    /**
+     * Name
+     */
     private String name;
 
     public Base(int id, String name) {
@@ -40,12 +53,16 @@ public class Base {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Base base = (Base) o;
-        return id == base.id &&
-                version == base.version &&
-                Objects.equals(name, base.name);
+        return id == base.id
+                && version == base.version
+                && Objects.equals(name, base.name);
     }
 
     @Override

@@ -5,19 +5,35 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
+ * Class is a NonBlockingCache
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 06.08.2020
  */
 public class NonBlockingCache implements Cache<Base> {
 
+    /**
+     * Cache
+     */
     private final Map<Integer, Base> cache;
-    private AtomicReference<Integer> version;
+
+    /**
+     * Atomic temp version
+     */
+    private final AtomicReference<Integer> version;
 
     public NonBlockingCache() {
         this.cache = new ConcurrentHashMap<>();
+        this.version = new AtomicReference<>();
     }
 
+    /**
+     * Method add model in cache
+     *
+     * @param model
+     * @return boolean
+     */
     @Override
     public boolean add(Base model) {
         boolean result = false;
@@ -28,6 +44,11 @@ public class NonBlockingCache implements Cache<Base> {
         return result;
     }
 
+    /**
+     * Method update model in cache
+     *
+     * @param model
+     */
     @Override
     public void update(Base model) {
         version.set(model.getVersion());
@@ -42,6 +63,12 @@ public class NonBlockingCache implements Cache<Base> {
         });
     }
 
+    /**
+     * Method delete model from cache
+     *
+     * @param model
+     * @return boolean
+     */
     @Override
     public boolean delete(Base model) {
         boolean result = false;
@@ -50,5 +77,9 @@ public class NonBlockingCache implements Cache<Base> {
             result = true;
         }
         return result;
+    }
+
+    public Map<Integer, Base> getCache() {
+        return cache;
     }
 }
