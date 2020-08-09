@@ -18,14 +18,8 @@ public class NonBlockingCache implements Cache<Base> {
      */
     private final Map<Integer, Base> cache;
 
-    /**
-     * Atomic temp version
-     */
-    private final AtomicReference<Integer> version;
-
     public NonBlockingCache() {
         this.cache = new ConcurrentHashMap<>();
-        this.version = new AtomicReference<>();
     }
 
     /**
@@ -51,14 +45,14 @@ public class NonBlockingCache implements Cache<Base> {
      */
     @Override
     public void update(Base model) {
-        version.set(model.getVersion());
+        model.getTmpVersion().set(model.getVersion());
         cache.computeIfPresent(model.getId(), (key, value) -> {
-            int current = version.get();
+            int current = model.getTmpVersion().get();
             int newVersion = current + 1;
-            if (!version.compareAndSet(current, newVersion)) {
+            if (!model.getTmpVersion().compareAndSet(current, newVersion)) {
                 throw new OptimisticException();
             }
-            model.setVersion(version.get());
+            model.setVersion(model.getTmpVersion().get());
             return model;
         });
     }
