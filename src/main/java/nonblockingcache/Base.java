@@ -1,6 +1,7 @@
 package nonblockingcache;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Class is a Base
@@ -25,10 +26,16 @@ public class Base {
      */
     private String name;
 
+    /**
+     * Temp version
+     */
+    private final AtomicReference<Integer> tmpVersion;
+
     public Base(int id, String name) {
         this.id = id;
         this.name = name;
         this.version = 0;
+        this.tmpVersion = new AtomicReference<>(0);
     }
 
     public int getId() {
@@ -49,6 +56,10 @@ public class Base {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public AtomicReference<Integer> getTmpVersion() {
+        return tmpVersion;
     }
 
     @Override
