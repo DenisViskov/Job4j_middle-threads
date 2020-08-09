@@ -3,13 +3,16 @@ package threadpool;
 import shabloneproducerconsumer.SimpleBlockingQueue;
 
 /**
- * Класс реализует ...
+ * Class is an executor
  *
  * @author Денис Висков
  * @version 1.0
  * @since 09.08.2020
  */
 public class Executor extends Thread {
+    /**
+     * Tasks
+     */
     private final SimpleBlockingQueue<Runnable> tasks;
 
     public Executor(SimpleBlockingQueue<Runnable> tasks) {
