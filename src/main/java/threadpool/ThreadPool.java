@@ -2,6 +2,7 @@ package threadpool;
 
 import shabloneproducerconsumer.SimpleBlockingQueue;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -16,9 +17,9 @@ public class ThreadPool {
     private final List<Thread> threads;
     private final SimpleBlockingQueue<Runnable> tasks;
 
-    public ThreadPool(List<Thread> threads, SimpleBlockingQueue<Runnable> tasks) {
-        this.threads = checkThreadsOnAmountProcessors(threads);
-        this.tasks = tasks;
+    public ThreadPool() {
+        this.tasks = new SimpleBlockingQueue<>(10);
+        this.threads = new ArrayList<>(Runtime.getRuntime().availableProcessors());
     }
 
     public void work(Runnable job) {
@@ -29,10 +30,8 @@ public class ThreadPool {
 
     }
 
-    private List<Thread> checkThreadsOnAmountProcessors(List<Thread> threads) {
-        if (threads.size() > Runtime.getRuntime().availableProcessors()) {
-            throw new IllegalArgumentException("Count of threads more than amount of processors");
-        }
-        return threads;
+    public void execute() {
+
     }
+
 }
