@@ -2,6 +2,7 @@ package emailservice;
 
 /**
  * Class is an User
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 10.08.2020
