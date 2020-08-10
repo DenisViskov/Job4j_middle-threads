@@ -1,5 +1,7 @@
 package emailservice;
 
+import net.jcip.annotations.GuardedBy;
+import net.jcip.annotations.ThreadSafe;
 import threadpool.Executor;
 
 import java.util.concurrent.ExecutorService;
@@ -12,11 +14,13 @@ import java.util.concurrent.Executors;
  * @version 1.0
  * @since 10.08.2020
  */
+@ThreadSafe
 public class EmailNotification implements Email<User> {
 
     /**
      * Thread pool service
      */
+    @GuardedBy("this")
     private final ExecutorService service;
 
     public EmailNotification() {
@@ -31,7 +35,7 @@ public class EmailNotification implements Email<User> {
      * @param to
      */
     @Override
-    public void emailTo(User to) {
+    public synchronized void emailTo(User to) {
         service.submit(() -> {
             String subject = "Notification" + " "
                     + to.getUserName() + " "
@@ -48,7 +52,7 @@ public class EmailNotification implements Email<User> {
      * @return boolean
      */
     @Override
-    public boolean close() {
+    public synchronized boolean close() {
         service.shutdown();
         try {
             Thread.sleep(500);
