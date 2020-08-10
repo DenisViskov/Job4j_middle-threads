@@ -62,7 +62,7 @@ public class ThreadPool {
      */
     private void createExecutors() {
         for (int i = 0; i < Runtime.getRuntime().availableProcessors(); i++) {
-            threads.add(i, new Executor(tasks));
+            threads.add(new Executor(tasks));
         }
     }
 
