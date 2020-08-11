@@ -14,20 +14,14 @@ import java.util.concurrent.Executors;
  * @version 1.0
  * @since 10.08.2020
  */
-@ThreadSafe
 public class EmailNotification implements Email<User> {
 
     /**
      * Thread pool service
      */
-    @GuardedBy("this")
-    private final ExecutorService service;
-
-    public EmailNotification() {
-        this.service = Executors.newFixedThreadPool(Runtime
-                .getRuntime()
-                .availableProcessors());
-    }
+    private final ExecutorService service = Executors.newFixedThreadPool(Runtime
+            .getRuntime()
+            .availableProcessors());
 
     /**
      * Method send mail to given User
@@ -35,7 +29,7 @@ public class EmailNotification implements Email<User> {
      * @param to
      */
     @Override
-    public synchronized void emailTo(User to) {
+    public void emailTo(User to) {
         service.submit(() -> {
             String subject = "Notification" + " "
                     + to.getUserName() + " "
@@ -52,7 +46,7 @@ public class EmailNotification implements Email<User> {
      * @return boolean
      */
     @Override
-    public synchronized boolean close() {
+    public boolean close() {
         service.shutdown();
         try {
             Thread.sleep(500);
