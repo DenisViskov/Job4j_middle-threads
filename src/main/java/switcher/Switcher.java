@@ -1,13 +1,14 @@
 package switcher;
 
 /**
- * Класс реализует ...
+ * Class is a Switcher
  *
  * @author Денис Висков
  * @version 1.0
  * @since 13.08.2020
  */
 public class Switcher {
+
     public static void main(String[] args) throws InterruptedException {
         Thread first = new Thread(
                 () -> {
@@ -19,24 +20,24 @@ public class Switcher {
                             } catch (InterruptedException e) {
                                 e.printStackTrace();
                                 Thread.currentThread().interrupt();
-                                Switcher.class.notifyAll();
                             }
                         }
+                        Switcher.class.notifyAll();
                     }
                 }
         );
         Thread second = new Thread(
                 () -> {
                     synchronized (Switcher.class) {
-                        while (true) {
-                            while (!first.isInterrupted()) {
-                                try {
-                                    Switcher.class.wait();
-                                } catch (InterruptedException e) {
-                                    e.printStackTrace();
-                                    Thread.currentThread().interrupt();
-                                }
+                        if (!first.isInterrupted()) {
+                            try {
+                                Switcher.class.wait();
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                                Thread.currentThread().interrupt();
                             }
+                        }
+                        while (true) {
                             System.out.println("Thread B");
                             try {
                                 Thread.sleep(1000);
