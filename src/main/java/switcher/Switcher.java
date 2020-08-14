@@ -11,43 +11,47 @@ public class Switcher {
     public static void main(String[] args) throws InterruptedException {
         Thread first = new Thread(
                 () -> {
-                    while (!Thread.currentThread().isInterrupted()) {
-                        System.out.println("Thread A");
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            Thread.currentThread().interrupt();
+                    synchronized (Switcher.class) {
+                        while (!Thread.currentThread().isInterrupted()) {
+                            System.out.println("Thread A");
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                                Thread.currentThread().interrupt();
+                                Switcher.class.notifyAll();
+                            }
                         }
                     }
                 }
         );
         Thread second = new Thread(
                 () -> {
-                    while (!first.isInterrupted()) {
-                        try {
-                            Thread.currentThread().wait();
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                            Thread.currentThread().interrupt();
-                        }
-                    }
-                    while (!Thread.currentThread().isInterrupted()) {
-                        System.out.println("Thread B");
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
+                    synchronized (Switcher.class) {
+                        while (true) {
+                            while (!first.isInterrupted()) {
+                                try {
+                                    Switcher.class.wait();
+                                } catch (InterruptedException e) {
+                                    e.printStackTrace();
+                                    Thread.currentThread().interrupt();
+                                }
+                            }
+                            System.out.println("Thread B");
+                            try {
+                                Thread.sleep(1000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                                Thread.currentThread().interrupt();
+                            }
                         }
                     }
                 }
         );
-        first.start();
         second.start();
+        first.start();
         Thread.sleep(5000);
         first.interrupt();
-        Thread.sleep(10000);
-        second.interrupt();
         first.join();
         second.join();
     }
