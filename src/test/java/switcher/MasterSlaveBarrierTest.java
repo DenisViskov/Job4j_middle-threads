@@ -12,21 +12,10 @@ public class MasterSlaveBarrierTest {
         boolean result = false;
         MasterSlaveBarrier barrier = new MasterSlaveBarrier();
         Thread first = new Thread(() -> {
-            synchronized (barrier) {
-                barrier.tryMaster();
-                barrier.doneMaster();
-            }
+            barrier.tryMaster();
         });
         Thread second = new Thread(() -> {
-            synchronized (barrier) {
-                try {
-                    barrier.wait();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                    Thread.currentThread().interrupt();
-                }
-                barrier.trySlave();
-            }
+            barrier.trySlave();
         });
         second.start();
         first.start();
