@@ -17,8 +17,8 @@ public class MasterSlaveBarrierTest {
         Thread second = new Thread(() -> {
             barrier.trySlave();
         });
-        first.start();
         second.start();
+        first.start();
         Thread.sleep(5000);
         first.interrupt();
         first.join();
