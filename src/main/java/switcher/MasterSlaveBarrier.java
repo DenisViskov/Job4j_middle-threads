@@ -3,6 +3,8 @@ package switcher;
 import net.jcip.annotations.GuardedBy;
 import net.jcip.annotations.ThreadSafe;
 
+import java.util.concurrent.atomic.AtomicBoolean;
+
 /**
  * Class is a Master Slave Barrier
  *
@@ -14,17 +16,22 @@ import net.jcip.annotations.ThreadSafe;
 public class MasterSlaveBarrier {
 
     /**
-     * Current thread
+     * Master
      */
     @GuardedBy("this")
-    private Thread current;
+    private boolean master = true;
+
+    /**
+     * Slave
+     */
+    @GuardedBy("this")
+    private boolean slave = false;
 
     /**
      * Method of run master
      */
     public synchronized void tryMaster() {
-        setCurrent(Thread.currentThread());
-        while (!current.isInterrupted()) {
+        while (isMaster()) {
             System.out.println("Thread A");
             try {
                 Thread.sleep(1000);
@@ -33,14 +40,14 @@ public class MasterSlaveBarrier {
                 Thread.currentThread().interrupt();
             }
         }
-        doneMaster();
+        notifyAll();
     }
 
     /**
      * Method of run slave
      */
     public synchronized void trySlave() {
-        if (current == null) {
+        if (isMaster()) {
             try {
                 wait();
             } catch (InterruptedException e) {
@@ -48,8 +55,8 @@ public class MasterSlaveBarrier {
                 Thread.currentThread().interrupt();
             }
         }
-        setCurrent(Thread.currentThread());
-        while (!current.isInterrupted()) {
+        setSlave(true);
+        while (isSlave()) {
             System.out.println("Thread B");
             try {
                 Thread.sleep(1000);
@@ -58,7 +65,6 @@ public class MasterSlaveBarrier {
                 Thread.currentThread().interrupt();
             }
         }
-        doneSlave();
     }
 
     /**
@@ -66,7 +72,7 @@ public class MasterSlaveBarrier {
      * sends notifyAll()
      */
     public void doneMaster() {
-        notifyAll();
+        setMaster(false);
     }
 
     /**
@@ -74,14 +80,22 @@ public class MasterSlaveBarrier {
      * interrupt current thread
      */
     public void doneSlave() {
-        current.interrupt();
+        setSlave(false);
     }
 
-    public Thread getCurrent() {
-        return current;
+    public synchronized boolean isMaster() {
+        return master;
     }
 
-    public void setCurrent(Thread current) {
-        this.current = current;
+    public void setMaster(boolean master) {
+        this.master = master;
+    }
+
+    public synchronized boolean isSlave() {
+        return slave;
+    }
+
+    public void setSlave(boolean slave) {
+        this.slave = slave;
     }
 }
