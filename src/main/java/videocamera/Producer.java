@@ -23,7 +23,7 @@ public class Producer {
     private final String url = "http://www.mocky.io/v2/5c51b9dd3400003252129fb5";
     private final Store store = new Store();
     private final ExecutorService service = Executors.newFixedThreadPool(Runtime.getRuntime().availableProcessors());
-    private final CountDownLatch downLatch = new CountDownLatch(4);
+    private final CountDownLatch downLatch = new CountDownLatch(Runtime.getRuntime().availableProcessors());
 
     private String readUrl() throws IOException {
         URL link = new URL(url);
@@ -48,6 +48,7 @@ public class Producer {
         producer.parseAndPut(json);
         while (!producer.store.isEmpty()) {
             producer.service.execute(new Agregator(producer.store, producer.downLatch));
+            Thread.sleep(500);
         }
         producer.downLatch.await();
         producer.service.shutdown();
