@@ -11,19 +11,34 @@ import java.util.StringJoiner;
 import java.util.concurrent.CountDownLatch;
 
 /**
+ * Class is an Agregator
+ *
  * @author Денис Висков
  * @version 1.0
  * @since 25.08.2020
  */
-public class Agregator implements Runnable {
+public class Aggregator implements Runnable {
+    /**
+     * Store
+     */
     private final Store store;
+
+    /**
+     * CountDownLatch
+     */
     private final CountDownLatch latch;
 
-    public Agregator(Store store, CountDownLatch latch) {
+    public Aggregator(Store store, CountDownLatch latch) {
         this.store = store;
         this.latch = latch;
     }
 
+    /**
+     * Method reading url and return JSONObject
+     *
+     * @param url
+     * @return JSONObject
+     */
     private JSONObject readUrl(String url) {
         URL link = null;
         try {
