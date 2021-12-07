@@ -25,6 +25,24 @@ public class RowColSumTest {
     }
 
     @Test
+    public void sum2() {
+        final int[][] matrix = new int[][]{
+            {1, 2, 3, 6},
+            {4, 5, 6, 5},
+            {7, 8, 9, 10},
+            {10, 20, 40, 50}
+        };
+        final Sums[] expectedResult = new Sums[]{
+            new Sums(12, 22),
+            new Sums(20, 35),
+            new Sums(34, 58),
+            new Sums(120, 71)
+        };
+        final Sums[] calculatedResult = RowColSum.sum(matrix);
+        assertArrayEquals(expectedResult, calculatedResult);
+    }
+
+    @Test
     public void asyncSum() {
         final int[][] matrix = new int[][]{
             {1, 2, 3},
